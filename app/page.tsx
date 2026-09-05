@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import {
   ArrowRight,
   Award,
@@ -13,9 +13,11 @@ import {
   Mail,
   MapPin,
   Menu,
+  Moon,
   Phone,
   Ruler,
   ShieldCheck,
+  Sun,
   Truck,
   Users,
   Waves,
@@ -110,7 +112,7 @@ const content = {
     title: "ማህበረሰቦችን ወደፊት የሚያራምዱ መሠረተ ልማቶችን እንገነባለን።",
     desc: "መልኩ አዳነ ጠቅላላ ሥራ ተቋራጭ በመንገድ፣ በህንፃ፣ በመሬት ስራና በልዩ የግንባታ ስራዎች ላይ ያተኩራል።",
     primary: "ፕሮጀክቶችን ይመልከቱ", secondary: "የምክክር ጥያቄ ያቅርቡ", heroNote: "አፈጻጸም · ደህንነት · ተጠያቂነት",
-    aboutEyebrow: "ስለ እኛ", aboutTitle: "በአፈጻጸም ላይ ያተኮረ የግንባታ ተቋርጭ።", aboutText: "የሳይት አስተዳደር፣ ቡድኖች፣ ማሽነሪና ተግባራዊ ማስተባበርን ከመጀመሪያ የሳይት ስራ እስከ ርክክብ እናጣምራለን።",
+    aboutEyebrow: "ስለ እኛ", aboutTitle: "በአፈጻጸም ላይ ያተኮረ የግንባታ ተቋራጭ።", aboutText: "የሳይት አስተዳደር፣ ቡድኖች፣ ማሽነሪና ተግባራዊ ማስተባበርን ከመጀመሪያ የሳይት ስራ እስከ ርክክብ እናጣምራለን።",
     points: ["የመንገድና የከተማ መሠረተ ልማት", "የንግድ፣ የመኖሪያና የተቋማት ህንፃዎች", "የመሬት ስራና የሳይት ዝግጅት", "ከባድ ማሽነሪና የሳይት ሎጂስቲክስ", "የውሃና የፏፏቴ ስራዎች", "ከሳይት እስከ ርክክብ የፕሮጀክት ማስተባበር"],
     servicesEyebrow: "አቅሞች", servicesTitle: "የምንሰራቸው", servicesText: "በሳይት አስተዳደርና በከባድ ማሽነሪ የተደገፉ ዋና የግንባታ አቅሞች።",
     services: [[Truck, "መንገድና የከተማ መሠረተ ልማት", "ኮሪደር፣ አስፋልት፣ እግረኛ መንገድና ፍሳሽ።"], [Building2, "የህንፃ ግንባታ", "የንግድ፣ የመኖሪያና የተቋማት ህንፃዎች።"], [Ruler, "የመሬት ስራ", "ቁፋሮ፣ ደረጃ ማስተካከል፣ ማጠናከርና የመሠረት ዝግጅት።"], [Waves, "የውሃና ፏፏቴ ስራ", "ልዩ የሃይድሮሊክና የውሃ ተከላዎች።"], [HardHat, "የሳይት አስተዳደር", "ሰው፣ ቁሳቁስ፣ ማሽነሪና የግንባታ ስራ ማስተባበር።"], [ShieldCheck, "ጥራትና ደህንነት", "ምርመራ፣ ደህንነትና ተጠያቂነት በስራ ሂደት ውስጥ።"]],
@@ -134,24 +136,37 @@ const gallery = [
   [photos.logo, "Company identity"], [photos.corridor, "Hawassa corridor"], [photos.graderWork, "Roadwork"], [photos.finishedCorridor, "Finished corridor"], [photos.truckLoader, "Heavy equipment"], [photos.companySign, "Company signage"],
   [photos.tanker, "Water tanker"], [photos.landscaping, "Landscaping"], [photos.building, "Building project"], [photos.structure, "Structural works"], [photos.nightExcavator, "Night construction"], [photos.nightWorks, "Night site work"],
   [photos.dumpTruck, "Dump truck"], [photos.roller, "Compaction"], [photos.roadWorks, "Road construction"], [photos.excavatorTruck, "Excavation"], [photos.grader, "Motor grader"], [photos.siteTeam, "Field team"],
-  [photos.graderTruck, "Grader and truck"], [photos.buildingSite, "Building frame"], [photos.event, "Company event"], [photos.office, "Office"], [photos.completedPath, "Completed public space"], [photos.leader, "Leadership"], [photos.tarekegn, "Tarrekegn Karesso — Construction Sites Manager"],
+  [photos.graderTruck, "Grader and truck"], [photos.buildingSite, "Building frame"], [photos.event, "Company event"], [photos.office, "Office"], [photos.completedPath, "Completed public space"], [photos.leader, "Leadership"], [photos.tarekegn, "Tarrekegn Karesso"] ,
 ];
+
+type Theme = "obsidian" | "sandstone";
 
 export default function Home() {
   const [lang, setLang] = useState<"en" | "am">("en");
+  const [theme, setTheme] = useState<Theme>("obsidian");
   const [open, setOpen] = useState(false);
   const [faq, setFaq] = useState<number | null>(0);
   const [sent, setSent] = useState(false);
   const t = content[lang];
   const ids = ["about", "services", "projects", "fleet", "leadership", "gallery", "contact"];
 
+  useEffect(() => {
+    const saved = window.localStorage.getItem("melaku-theme");
+    if (saved === "obsidian" || saved === "sandstone") setTheme(saved);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    window.localStorage.setItem("melaku-theme", theme);
+  }, [theme]);
+
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSent(true);
   }
 
-  return <main id="top" className="min-h-screen bg-[#f7f8fa] text-slate-950">
-    <div className="bg-slate-950 text-xs text-white/70"><div className="mx-auto flex max-w-7xl justify-between gap-4 px-5 py-2.5"><span>{t.location}</span><span className="hidden sm:block">{t.hours}</span></div></div>
+  return <main id="top" data-theme={theme} className="min-h-screen bg-[#f7f8fa] text-slate-950">
+    <div className="bg-slate-950 text-xs text-white/70"><div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-2.5"><div className="flex min-w-0 items-center gap-4"><span className="truncate">{t.location}</span><span className="hidden border-l border-white/10 pl-4 sm:block">{t.hours}</span></div><div className="flex shrink-0 items-center gap-1 rounded-full border border-white/10 bg-white/[0.03] p-1"><button type="button" aria-label="Obsidian Gold theme" aria-pressed={theme === "obsidian"} onClick={() => setTheme("obsidian")} className={`flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[10px] font-bold transition ${theme === "obsidian" ? "bg-white text-slate-950" : "text-white/55 hover:text-white"}`}><Moon size={12}/><span className="hidden sm:inline">Obsidian</span></button><button type="button" aria-label="Sandstone theme" aria-pressed={theme === "sandstone"} onClick={() => setTheme("sandstone")} className={`flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[10px] font-bold transition ${theme === "sandstone" ? "bg-[#d6a84f] text-slate-950" : "text-white/55 hover:text-white"}`}><Sun size={12}/><span className="hidden sm:inline">Sandstone</span></button></div></div></div>
 
     <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
@@ -176,7 +191,7 @@ export default function Home() {
 
     <section id="fleet" className="border-y border-slate-200 bg-white"><div className="mx-auto max-w-7xl px-5 py-20 lg:py-28"><p className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">{t.fleetEyebrow}</p><h2 className="mt-3 text-3xl font-black tracking-[-0.035em] sm:text-4xl">{t.fleetTitle}</h2><p className="mt-4 max-w-2xl text-base leading-8 text-slate-600">{t.fleetText}</p><div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{t.fleet.map(([src,title,desc]) => <article key={String(title)} className="overflow-hidden rounded-3xl border border-slate-200 bg-white"><div className="relative aspect-[4/3] bg-slate-200"><Image src={src} alt={String(title)} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover"/></div><div className="p-5"><h3 className="font-extrabold">{String(title)}</h3><p className="mt-2 text-sm leading-6 text-slate-600">{String(desc)}</p></div></article>)}</div></div></section>
 
-    <section id="leadership" className="mx-auto max-w-7xl px-5 py-20 lg:py-28"><p className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">{t.leadershipEyebrow}</p><h2 className="mt-3 text-3xl font-black tracking-[-0.035em] sm:text-4xl">{t.leadershipTitle}</h2><p className="mt-4 max-w-2xl text-base leading-8 text-slate-600">{t.leadershipText}</p><div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-4">{t.leadership.map(([src,name,title]) => <article key={String(name)} className="overflow-hidden rounded-3xl border border-slate-200 bg-white"><div className="relative aspect-[4/4.1] bg-slate-200"><Image src={src} alt={String(name)} fill sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw" className="object-cover"/></div><div className="p-6"><h3 className="text-lg font-extrabold">{String(name)}</h3><p className="mt-1 text-sm font-semibold text-slate-500">{String(title)}</p></div></article>)}</div></section>
+    <section id="leadership" className="mx-auto max-w-7xl px-5 py-20 lg:py-28"><p className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">{t.leadershipEyebrow}</p><h2 className="mt-3 text-3xl font-black tracking-[-0.035em] sm:text-4xl">{t.leadershipTitle}</h2><p className="mt-4 max-w-2xl text-base leading-8 text-slate-600">{t.leadershipText}</p><div className="mt-10 grid gap-6 lg:grid-cols-2">{t.leadership.map(([src,name,title]) => <article key={String(name)} className="overflow-hidden rounded-3xl border border-slate-200 bg-white"><div className="relative aspect-[4/3] bg-slate-200"><Image src={src} alt={String(name)} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover"/></div><div className="p-6"><h3 className="text-lg font-extrabold">{String(name)}</h3><p className="mt-1 text-sm font-semibold text-slate-500">{String(title)}</p></div></article>)}</div></section>
 
     <section className="border-y border-slate-200 bg-slate-100"><div className="mx-auto max-w-7xl px-5 py-20 lg:py-24"><p className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">{t.principlesEyebrow}</p><h2 className="mt-3 text-3xl font-black tracking-[-0.035em] sm:text-4xl">{t.principlesTitle}</h2><div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">{t.principles.map(([Icon,title,desc]) => <article key={String(title)} className="rounded-3xl border border-slate-200 bg-white p-6"><Icon size={21}/><h3 className="mt-5 font-extrabold">{String(title)}</h3><p className="mt-2 text-sm leading-7 text-slate-600">{String(desc)}</p></article>)}</div></div></section>
 
