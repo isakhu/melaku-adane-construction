@@ -69,19 +69,13 @@ export default function AnimeMotion() {
 
     cards.forEach((card) => observer.observe(card));
 
-    const sections = Array.from(page.querySelectorAll<HTMLElement>("section"));
-    const sectionDecorators = sections.slice(0, 9);
-    sectionDecorators.forEach((section, index) => {
-      section.style.setProperty("--melaku-index", String(index));
-    });
-
     const imageWrappers = Array.from(
       page.querySelectorAll<HTMLElement>(
         "section#projects article > div:first-child, section#fleet article > div:first-child, section#leadership article > div:first-child, section#gallery .overflow-hidden",
       ),
     );
 
-    const pointerHandlers = new Map<HTMLElement, (event: PointerEvent) => void>();
+    const pointerHandlers = new Map<HTMLElement, { move: (event: PointerEvent) => void; leave: () => void }>();
     imageWrappers.forEach((wrapper) => {
       const image = wrapper.querySelector("img");
       if (!image) return;
@@ -123,14 +117,14 @@ export default function AnimeMotion() {
 
       wrapper.addEventListener("pointermove", onPointerMove);
       wrapper.addEventListener("pointerleave", reset);
-      pointerHandlers.set(wrapper, onPointerMove);
+      pointerHandlers.set(wrapper, { move: onPointerMove, leave: reset });
     });
 
     return () => {
       observer.disconnect();
-      pointerHandlers.forEach((handler, wrapper) => {
-        wrapper.removeEventListener("pointermove", handler);
-        wrapper.removeEventListener("pointerleave", () => undefined);
+      pointerHandlers.forEach(({ move, leave }, wrapper) => {
+        wrapper.removeEventListener("pointermove", move);
+        wrapper.removeEventListener("pointerleave", leave);
       });
     };
   }, []);
