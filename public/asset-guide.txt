@@ -1,1 +1,15 @@
-Approved company photography should be added to this directory and referenced by the page. Do not publish unverified images or claims.
+# Public image assets
+
+Add the approved company photographs directly inside `public/` using these exact filenames:
+
+hawassa-night.jpg
+bole-bulbula.jpg
+hawassa-sign.jpg
+fleet-grader.jpg
+fleet-excavator.jpg
+fleet-roller.jpg
+fleet-truck.jpg
+owner.jpg
+construction-leader.jpg
+
+These names are reserved for the website image references. Keep the filenames exactly the same, including lowercase letters and hyphens.
