@@ -261,12 +261,97 @@ footer {
   border-color: var(--line-dark) !important;
 }
 
-/* Motion */
+/* Existing image motion */
 main img {
   transition: transform .75s cubic-bezier(.2,.7,.2,1), filter .5s ease;
 }
 main .overflow-hidden:hover > div > img,
 main .overflow-hidden:hover > img { transform: scale(1.022); }
+
+/* Anime.js + 3D image direction */
+main article,
+section#gallery .overflow-hidden,
+section#projects article > div:first-child,
+section#fleet article > div:first-child,
+section#leadership article > div:first-child {
+  transform-style: preserve-3d;
+  perspective: 1200px;
+  will-change: transform;
+}
+
+main article,
+section#gallery .overflow-hidden {
+  position: relative;
+}
+
+section#projects article > div:first-child,
+section#fleet article > div:first-child,
+section#leadership article > div:first-child,
+section#gallery .overflow-hidden {
+  isolation: isolate;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  overflow: hidden;
+  will-change: transform;
+}
+
+section#projects article > div:first-child::after,
+section#fleet article > div:first-child::after,
+section#leadership article > div:first-child::after,
+section#gallery .overflow-hidden::after,
+main > section:first-of-type .rounded-\[2rem\]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background:
+    linear-gradient(120deg, rgba(255,255,255,.15), transparent 25%, transparent 70%, rgba(214,168,79,.10)),
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: auto, 28px 28px, 28px 28px;
+  mix-blend-mode: soft-light;
+  opacity: .48;
+  transform: translateZ(18px);
+  transition: opacity .45s ease, transform .65s cubic-bezier(.2,.7,.2,1);
+}
+
+section#projects article:hover > div:first-child::after,
+section#fleet article:hover > div:first-child::after,
+section#leadership article:hover > div:first-child::after,
+section#gallery .overflow-hidden:hover::after,
+main > section:first-of-type .rounded-\[2rem\]:hover::after {
+  opacity: .85;
+  transform: translateZ(26px) scale(1.015);
+}
+
+section#projects article img,
+section#fleet article img,
+section#leadership article img,
+section#gallery img,
+main > section:first-of-type img {
+  transform: translateZ(0) scale(1.012);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  filter: saturate(.94) contrast(1.04);
+  will-change: transform;
+}
+
+section#projects article:hover img,
+section#fleet article:hover img,
+section#leadership article:hover img,
+section#gallery .overflow-hidden:hover img,
+main > section:first-of-type .rounded-\[2rem\]:hover img {
+  filter: saturate(1.08) contrast(1.07);
+}
+
+/* Floating depth accents */
+main > section:first-of-type .absolute {
+  transform-style: preserve-3d;
+}
+main > section:first-of-type .absolute.rounded-full {
+  box-shadow: 0 0 80px rgba(214,168,79,.08);
+}
 
 @keyframes riseIn {
   from { opacity: 0; transform: translateY(10px); }
@@ -277,7 +362,7 @@ main > section h2 { animation: riseIn .7s ease both; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  *, *::before, *::after { animation: none !important; transition: none !important; }
+  *, *::before, *::after { animation: none !important; transition: none !important; transform: none !important; }
 }
 
 @media (max-width: 1024px) {
