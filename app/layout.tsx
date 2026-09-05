@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./elite-motion.css";
 import AnimeMotion from "./anime-motion";
 
 export const metadata: Metadata = {
